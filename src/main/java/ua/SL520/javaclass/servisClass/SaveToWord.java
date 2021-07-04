@@ -2,6 +2,7 @@ package ua.SL520.javaclass.servisClass;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
@@ -14,8 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static ua.SL520.controller.Controller.openDirectory;
-import static ua.SL520.controller.Controller.openFile;
+import static ua.SL520.controller.Controller.*;
 
 public class SaveToWord {
     public String headerContent, footerContent, fileContent;
@@ -24,7 +24,7 @@ public class SaveToWord {
     public void toWord() throws IOException {
 
 
-        headerContent = "ДЕРЖАВНИЙ НАУКОВО-ВИПРОБУВАЛЬНИЙ ІНСТИТУТ ВИПРОБУВАНЬ І СЕРТИФІКАЦІЇ ОЗБРОЄННЯ ТА ВІЙСЬКОВОЇ ТЕХНІКИ ";
+        headerContent = "ДЕРЖАВНИЙ НАУКОВО-ДОСЛІДНИЙ ІНСТИТУТ ВИПРОБУВАНЬ І СЕРТИФІКАЦІЇ ОЗБРОЄННЯ ТА ВІЙСЬКОВОЇ ТЕХНІКИ ";
         footerContent = " 14033 м. Чернігів ";
 
         fileContent = "Дані вимірювань " + openFile;
@@ -102,10 +102,50 @@ public class SaveToWord {
         bodyParagraph1.setAlignment(ParagraphAlignment.LEFT);
         document1.setFontSize(12);
         document1.setFontFamily("Time New Roman");
-        document1.setText("Координати вогневої позиції:  ");
         document1.addBreak();
-//        document1.setText("X = " + calc.xVp + ",  Y = " + calc.yVp);
-//        document1.addBreak();
+
+        XWPFTable table = docxModel.createTable();
+        int cellCount = StringUtils.countMatches(headFile, ",");
+        int rownum = 0;
+
+        XWPFTableRow tableRow = table.getRow(0);
+        tableRow.getCell(0);
+//        tableRow.addNewTableCell().setText("Номер");
+//        tableRow.addNewTableCell().setText("Номер1111");
+
+        for (int colnum = 0; colnum <= cellCount; colnum++) {
+
+
+            tableRow.addNewTableCell().setText(headFile.split(",").toString());
+            //cell.setCellValue(headFile.split(",")[colnum]);
+
+        }
+//
+//
+//        rownum++;
+//        XWPFTableRow tableRow1 = table.getRow(rownum);
+//        tableRow1.getCell(0).setText("Назва файлу");
+//        tableRow1.addNewTableCell().setText("Номер");
+//        rownum++;
+
+//        headFile = "Назва файлу, Номер, Дата, Час, Швидкість, Похибка, Точки, FitOrder, Примітка";
+
+//
+//        for (int colnum = 0; colnum <= cellCount; colnum++) {
+//            cell = row.createCell(colnum, CellType.STRING);
+//            cell.setCellValue(headFile.split(",")[colnum]);
+//            sheet.autoSizeColumn(colnum);
+//        }
+//        rownum++;
+//
+//        for (
+//                Result result : resultStream) {
+//            row = sheet.createRow(rownum);
+//            for (int colnum = 0; colnum <= columnCount; colnum++) {
+//                cell = row.createCell(colnum, CellType.STRING);
+//                cell.setCellValue(result.toString().split(",")[colnum]);
+//                //sheet.autoSizeColumn(colnum);
+//            }
 
 
         // сохраняем модель docx документа в файл

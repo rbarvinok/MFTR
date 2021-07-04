@@ -25,7 +25,6 @@
                   <MenuItem mnemonicParsing="false" text="Верикальна швидкість" />
                         <MenuItem mnemonicParsing="false" onAction="#onClickChart" text="Графік" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#onClickOpenFileInDesktop" text="Перегляд файлу" />
                     </items>
                 </Menu>
             <Menu mnemonicParsing="false" text="Налаштування">

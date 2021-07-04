@@ -21,9 +21,9 @@ public class Source {
 
     @AllArgsConstructor
     @Data
-    public static class TimeW {
-        private String time;
-        private double w;
+    public static class Tsource {
+        private int measNum;
+        private double velocity;
     }
 
 

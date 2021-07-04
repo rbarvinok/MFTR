@@ -258,9 +258,11 @@ public class Controller implements Initializable {
         progressIndicator.setVisible(false);
     }
 
-    public void onClickChart(ActionEvent actionEvent) throws IOException {
-        progressIndicator.setVisible(true);
-        System.out.println("ghjgsdlfsdafjk;ghk;j");
+    @SneakyThrows
+    public void onClickChart() {
+        os.viewURL = "/view/chart.fxml";
+        os.title = "Графік GPS   " + openFile;
+        os.openStage();
     }
 
     public void inputDates(List source) {
@@ -282,7 +284,7 @@ public class Controller implements Initializable {
     }
 
 
-    public void onClick_menuAbout(ActionEvent actionEvent) throws IOException {
+    public void onClick_menuAbout() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/about.fxml"));
         Parent root = fxmlLoader.load();
         Stage stage = new Stage(StageStyle.TRANSPARENT);
