@@ -11,23 +11,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import ua.SL520.javaclass.GetSettings;
 import ua.SL520.javaclass.domain.Result;
 import ua.SL520.javaclass.domain.Source;
 import ua.SL520.javaclass.servisClass.*;
 
-import java.awt.*;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -174,59 +170,92 @@ public class Controller implements Initializable {
         }
     }
 
-    @SneakyThrows
     public void onClickCalculate() {
-        getSettings.getSettings();
-        resultStream = resultBulk(sours);
+        if (statusLabel.getText().equals("")) {
+            statusBar.setText("Помилка! Відсутні дані для рохрахунку");
+            inform.hd = "Помилка! Відсутні дані для рохрахунку";
+            inform.ct = " 1. Відкрити файл  даних 'НАМ'\n 2. Натиснути кнопку Розрахувати \n 3. Зберегти розраховані дані в вихідний файл\n";
+            inform.alert();
+            statusBar.setText("");
+            return;
+        } else {
+            List<String> resultsStrings = resultStream.stream().map(Result::toString).collect(Collectors.toList());
+            //output to Table----------------------------------------
+            inputDates(resultsStrings);
+            TableColumn<InputDate, String> filename = new TableColumn<>("Назва файлу");
+            TableColumn<InputDate, String> measNum = new TableColumn<>("Номер");
+            TableColumn<InputDate, String> measDate = new TableColumn<>("Дата");
+            TableColumn<InputDate, String> measTime = new TableColumn<>("Час");
+            TableColumn<InputDate, String> velocity = new TableColumn<>("Швидкість");
+            TableColumn<InputDate, String> accuracy = new TableColumn<>("Похибка");
+            TableColumn<InputDate, String> pointsUsed = new TableColumn<>("Точки");
+            TableColumn<InputDate, String> fitOrder = new TableColumn<>("FitOrder");
+            TableColumn<InputDate, String> comment = new TableColumn<>("Примітка");
 
-        List<String> resultsStrings = resultStream.stream().map(Result::toString).collect(Collectors.toList());
-        //output to Table----------------------------------------
-        inputDates(resultsStrings);
-        TableColumn<InputDate, String> filename = new TableColumn<>("Назва файлу");
-        TableColumn<InputDate, String> measNum = new TableColumn<>("Номер");
-        TableColumn<InputDate, String> measDate = new TableColumn<>("Дата");
-        TableColumn<InputDate, String> measTime = new TableColumn<>("Час");
-        TableColumn<InputDate, String> velocity = new TableColumn<>("Швидкість");
-        TableColumn<InputDate, String> accuracy = new TableColumn<>("Похибка");
-        TableColumn<InputDate, String> pointsUsed = new TableColumn<>("Точки");
-        TableColumn<InputDate, String> fitOrder = new TableColumn<>("FitOrder");
-        TableColumn<InputDate, String> comment = new TableColumn<>("Примітка");
-
-        for (int i = 0; i <= colsInpDate - 9; i++) {
-            final int indexColumn = i;
-            filename.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(0 + indexColumn)));
-            measNum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(1 + indexColumn)));
-            measDate.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(2 + indexColumn)));
-            measTime.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(3 + indexColumn)));
-            velocity.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(4 + indexColumn)));
-            accuracy.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(5 + indexColumn)));
-            pointsUsed.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(6 + indexColumn)));
-            fitOrder.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(7 + indexColumn)));
-            comment.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(8 + indexColumn)));
+            for (int i = 0; i <= colsInpDate - 9; i++) {
+                final int indexColumn = i;
+                filename.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(0 + indexColumn)));
+                measNum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(1 + indexColumn)));
+                measDate.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(2 + indexColumn)));
+                measTime.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(3 + indexColumn)));
+                velocity.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(4 + indexColumn)));
+                accuracy.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(5 + indexColumn)));
+                pointsUsed.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(6 + indexColumn)));
+                fitOrder.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(7 + indexColumn)));
+                comment.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(8 + indexColumn)));
+            }
+            outputTable.getColumns().addAll(filename, measNum, measDate, measTime, velocity, accuracy, pointsUsed, fitOrder, comment);
+            outputTable.setItems(inputDatesList);
         }
-        outputTable.getColumns().addAll(filename, measNum, measDate, measTime, velocity, accuracy, pointsUsed, fitOrder, comment);
-        outputTable.setItems(inputDatesList);
-
         statusLabel.setText("Вихідні дані");
     }
 
     @SneakyThrows
     public void onClickSaveWord() {
+        if (CollectionUtils.isEmpty(resultStream)) {
+            log.warn("... is empty");
+            statusBar.setText("Помилка! Відсутні дані для збереження");
+            inform.hd = "Помилка! Відсутні дані для збереження";
+            inform.ct = " 1. Відкрити підготовлений файл вихідних даних\n 2. Натиснути кнопку Розрахувати \n 3. Зберегти розраховані дані в вихідний файл\n";
+            inform.alert();
+            progressIndicator.setVisible(false);
+            statusBar.setText("");
+            return;
+        }
+
         stw.toWord();
+
+
         inform.title = "Збереження файлу";
         inform.hd = null;
         inform.ct = "Успішно записано в файл '" + openFile + ".docx'";
         inform.inform();
+
         progressIndicator.setVisible(false);
     }
 
     @SneakyThrows
     public void onClickSaveExcel() {
+        progressIndicatorRun();
+        if (CollectionUtils.isEmpty(resultStream)) {
+            log.warn("... is empty");
+            statusBar.setText("Помилка! Відсутні дані для збереження");
+            inform.hd = "Помилка! Відсутні дані для збереження";
+            inform.ct = " 1. Відкрити підготовлений файл вихідних даних\n 2. Натиснути кнопку Розрахувати \n 3. Зберегти розраховані дані в вихідний файл\n";
+            inform.alert();
+            progressIndicator.setVisible(false);
+            statusBar.setText("");
+            return;
+        }
+
         ste.toExcel();
+
         inform.title = "Збереження файлу";
         inform.hd = null;
         inform.ct = "Успішно записано в файл '" + openFile + ".xlsx'";
         inform.inform();
+
+        progressIndicator.setVisible(false);
     }
 
     @SneakyThrows
@@ -254,25 +283,6 @@ public class Controller implements Initializable {
         }
     }
 
-    @SneakyThrows
-    public void onClickManual() {
-        if (Desktop.isDesktopSupported()) {
-            File url = new File("userManual/UserManual.pdf");
-            Desktop desktop = Desktop.getDesktop();
-            //System.out.println(url.getPath());
-            desktop.open(url);
-        }
-    }
-
-    @SneakyThrows
-    public void onClickImageSetup() {
-        if (Desktop.isDesktopSupported()) {
-            File url = new File("userManual/ImageSetup.pdf");
-            Desktop desktop = Desktop.getDesktop();
-            //System.out.println(url.getPath());
-            desktop.open(url);
-        }
-    }
 
     public void onClick_menuAbout() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/about.fxml"));

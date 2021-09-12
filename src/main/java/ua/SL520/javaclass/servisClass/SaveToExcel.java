@@ -30,50 +30,50 @@ public class SaveToExcel {
         Workbook book = new XSSFWorkbook();
         Sheet sheet = book.createSheet(openFile);
 
-        DataFormat format = book.createDataFormat();
-        CellStyle dateStyle = book.createCellStyle();
+    DataFormat format = book.createDataFormat();
+    CellStyle dateStyle = book.createCellStyle();
         dateStyle.setDataFormat(format.getFormat("dd.mm.yyyy"));
 
-        int rownum = 0;
-        Cell cell;
-        Row row = sheet.createRow(rownum);
-        cell = row.createCell(0, CellType.STRING);
+    int rownum = 0;
+    Cell cell;
+    Row row = sheet.createRow(rownum);
+    cell = row.createCell(0, CellType.STRING);
         cell.setCellValue("Дані вимірювань");
-        cell = row.createCell(1, CellType.STRING);
+    cell = row.createCell(1, CellType.STRING);
         cell.setCellValue(openFile);
-        rownum++;
-        row = sheet.createRow(rownum);
-        cell = row.createCell(0, CellType.STRING);
+    rownum++;
+    row = sheet.createRow(rownum);
+    cell = row.createCell(0, CellType.STRING);
         cell.setCellValue("Локальний час");
-        cell = row.createCell(1, CellType.STRING);
+    cell = row.createCell(1, CellType.STRING);
         cell.setCellValue(localZone);
-        rownum++;
-        rownum++;
-        row = sheet.createRow(rownum);
+    rownum++;
+    rownum++;
+    row = sheet.createRow(rownum);
 
-        int columnCount = StringUtils.countMatches(headFile, ",");
+    int columnCount = StringUtils.countMatches(headFile, ",");
         for (int colnum = 0; colnum <= columnCount; colnum++) {
-            cell = row.createCell(colnum, CellType.STRING);
-            cell.setCellValue(headFile.split(",")[colnum]);
-            sheet.autoSizeColumn(colnum);
-        }
-        rownum++;
+        cell = row.createCell(colnum, CellType.STRING);
+        cell.setCellValue(headFile.split(",")[colnum]);
+        sheet.autoSizeColumn(colnum);
+    }
+    rownum++;
 
         for (
-                Result result : resultStream) {
-            row = sheet.createRow(rownum);
-            for (int colnum = 0; colnum <= columnCount; colnum++) {
-                cell = row.createCell(colnum, CellType.STRING);
-                cell.setCellValue(result.toString().split(",")[colnum]);
-                //sheet.autoSizeColumn(colnum);
-            }
-            rownum++;
+    Result result : resultStream) {
+        row = sheet.createRow(rownum);
+        for (int colnum = 0; colnum <= columnCount; colnum++) {
+            cell = row.createCell(colnum, CellType.STRING);
+            cell.setCellValue(result.toString().split(",")[colnum]);
+            //sheet.autoSizeColumn(colnum);
         }
+        rownum++;
+    }
         for (int i = 0; i < 6; i++) {
-            sheet.autoSizeColumn(i);
-        }
+        sheet.autoSizeColumn(i);
+    }
 
-        FileOutputStream outFile = new FileOutputStream(file);
+    FileOutputStream outFile = new FileOutputStream(file);
         book.write(outFile);
         outFile.close();
     }

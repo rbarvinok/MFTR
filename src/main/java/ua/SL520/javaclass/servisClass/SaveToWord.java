@@ -9,13 +9,11 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
-import ua.SL520.javaclass.domain.Result;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import static ua.SL520.controller.Controller.*;
 
@@ -29,7 +27,7 @@ public class SaveToWord {
         headerContent = "ДЕРЖАВНИЙ НАУКОВО-ДОСЛІДНИЙ ІНСТИТУТ ВИПРОБУВАНЬ І СЕРТИФІКАЦІЇ ОЗБРОЄННЯ ТА ВІЙСЬКОВОЇ ТЕХНІКИ ";
         footerContent = " 14033 м. Чернігів ";
 
-        fileContent = "Дані вимірювань";
+        fileContent = "Дані вимірювань " + openFile;
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Зберегти як...");
@@ -98,8 +96,6 @@ public class SaveToWord {
         document.setTextPosition(25);
         document.setText(fileContent);
         document.addBreak();
-        document.setText(openFile);
-        //document.addBreak();
 
         XWPFParagraph bodyParagraph1 = docxModel.createParagraph();
         XWPFRun document1 = bodyParagraph1.createRun();
@@ -108,81 +104,50 @@ public class SaveToWord {
         document1.setFontFamily("Time New Roman");
         document1.addBreak();
 
-//-------------------  table  -------------
         XWPFTable table = docxModel.createTable();
         int cellCount = StringUtils.countMatches(headFile, ",");
         int rownum = 0;
-        String splitBy = ",";
-        String line;
-//------------------   1  ----------------------------
+
         XWPFTableRow tableRow = table.getRow(0);
+        tableRow.getCell(0);
+//        tableRow.addNewTableCell().setText("Номер");
+//        tableRow.addNewTableCell().setText("Номер1111");
 
-        line = Arrays.toString(headFile.split(splitBy));
-        line = line.replace("[", "").replace("]", "");
-
-
-        //---
         for (int colnum = 0; colnum <= cellCount; colnum++) {
-            tableRow.addNewTableCell();
-            tableRow.getCell(colnum).setText(line);
+
+
+            tableRow.addNewTableCell().setText(headFile.split(",").toString());
+            //cell.setCellValue(headFile.split(",")[colnum]);
+
         }
-        //---
-        for (Result result : resultStream) {
-            tableRow = table.createRow();
-
-            for (int colnum = 0; colnum <= cellCount; colnum++) {
-                line = resultStream.get(colnum).toString();
-                line = line.replace("[", "").replace("]", "");
-                String[] fields = line.split(splitBy, -1);
-                //tableRow.getCell(colnum).setText(Arrays.toString(result.toString().split(splitBy)));
-                tableRow.getCell(colnum).setText(fields.toString());
-            }
-        }
-
-        //-------------------------------    2    -------------------------------------------------
-//        List<String[]> csvData = new ArrayList<String[]>();
-//        csvData.addAll(Collections.singleton(resultStream.toString().split(",")));
-//        System.out.println(csvData);
-//        int cols = cellCount;
-//        int rows = (int)Math.ceil(resultStream.size());
-//        table = docxModel.createTable(rows, cols);
-//        XWPFTableRow row;
-//        XWPFTableCell cell;
-//        int i = 0;
 //
-//        for (int r = 0; r < rows; r++) {
 //
-//            row = table.getRow(r);
-//            for (int c = 0; c <= cols; c++) {
-//                cell = row.getCell(c);
-//                if (i < resultStream.size()) cell.setText(csvData.get(i)[1]);
-//                i++;
-//            }
-//        }
+//        rownum++;
+//        XWPFTableRow tableRow1 = table.getRow(rownum);
+//        tableRow1.getCell(0).setText("Назва файлу");
+//        tableRow1.addNewTableCell().setText("Номер");
+//        rownum++;
 
-//---------------------------------     0    ----------------------------------------------------
-//        XWPFTable table = docxModel.createTable();
-//        int cellCount = StringUtils.countMatches(headFile, ",");
-//        int rownum = 0;
-//
-//        XWPFTableRow tableRow = table.getRow(0);
-//        String line = Arrays.toString(headFile.split(","));
-//        System.out.println(line);
+//        headFile = "Назва файлу, Номер, Дата, Час, Швидкість, Похибка, Точки, FitOrder, Примітка";
+
 //
 //        for (int colnum = 0; colnum <= cellCount; colnum++) {
-//            tableRow.getCell(0);
-//            tableRow.addNewTableCell().setText(line);
+//            cell = row.createCell(colnum, CellType.STRING);
+//            cell.setCellValue(headFile.split(",")[colnum]);
+//            sheet.autoSizeColumn(colnum);
 //        }
-////        headFile = "Назва файлу, Номер, Дата, Час, Швидкість, Похибка, Точки, FitOrder, Примітка";
+//        rownum++;
 //
-//        for (Result result : resultStream) {
-//            tableRow = table.createRow();
-//
-//            for (int colnum = 0; colnum <= cellCount; colnum++) {
-//                tableRow.addNewTableCell().setText(Arrays.toString(result.toString().split(",")));
+//        for (
+//                Result result : resultStream) {
+//            row = sheet.createRow(rownum);
+//            for (int colnum = 0; colnum <= columnCount; colnum++) {
+//                cell = row.createCell(colnum, CellType.STRING);
+//                cell.setCellValue(result.toString().split(",")[colnum]);
+//                //sheet.autoSizeColumn(colnum);
 //            }
-//        }
-//-------------------------------------------------------------------------------------
+
+
         // сохраняем модель docx документа в файл
         FileOutputStream outputStream = null;
         try {

@@ -67,7 +67,7 @@
             <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="301.0" layoutY="409.0" prefHeight="27.0" prefWidth="110.0" text="Версія 1.0.3" textFill="#0f0f0f">
+      <Label layoutX="301.0" layoutY="409.0" prefHeight="27.0" prefWidth="110.0" text="Версія 1.01.03" textFill="#0f0f0f">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

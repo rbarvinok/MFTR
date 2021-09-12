@@ -22,19 +22,20 @@
                 <Menu mnemonicParsing="false" text="Інструменти">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#onClickCalculate" text="Розрахувати" />
+                  <MenuItem mnemonicParsing="false" text="Верикальна швидкість" />
                         <MenuItem mnemonicParsing="false" onAction="#onClickChart" text="Графік" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                     </items>
                 </Menu>
             <Menu mnemonicParsing="false" text="Налаштування">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onClickSettings" text="Часовий пояс" />
+                  <MenuItem mnemonicParsing="false" onAction="#onClickSettings" text="Атмосферний тиск" />
                </items>
             </Menu>
                 <Menu mnemonicParsing="false" text="Допомога">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onClickManual" text="Керівництво SL-520PE" />
-                  <MenuItem mnemonicParsing="false" onAction="#onClickImageSetup" text="Рисунок &quot;Setup&quot;" />
+                        <MenuItem mnemonicParsing="false" text="Керівництво НАМ" />
+                  <MenuItem mnemonicParsing="false" text="Керівництво оператора ПЗ" />
                   <MenuItem mnemonicParsing="false" onAction="#onClick_menuAbout" text="Про програму" />
                     </items>
                 </Menu>
@@ -140,23 +141,6 @@
                         <Tooltip text="Веедення значення наземного тиску" />
                     </tooltip>
                 </Button>
-                <Button id="b" layoutX="251.0" layoutY="9.0" mnemonicParsing="false" onAction="#onClickManual" prefHeight="20.0" prefWidth="20.0" styleClass="button1" stylesheets="@../styles/day.css">
-                    <graphic>
-                        <ImageView fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/question-mark.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                    <tooltip>
-                        <Tooltip text="Керівництво оператора SL-520PE" />
-                    </tooltip>
-                </Button>
-            <Separator layoutX="271.0" layoutY="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="4.0">
-               <tooltip>
-                  <Tooltip text="Зактити програму" />
-               </tooltip>
-            </Separator>
             <Button id="b" layoutX="231.0" layoutY="9.0" mnemonicParsing="false" onAction="#onClickCancelBtn" prefHeight="20.0" prefWidth="20.0" styleClass="button1" stylesheets="@../styles/day.css">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
