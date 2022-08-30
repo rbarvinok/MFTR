@@ -5,15 +5,16 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import ua.SL520.javaclass.domain.Result;
+import ua.SL520.javaclass.domain.ResultShot;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static ua.SL520.controller.Controller.*;
+import static ua.SL520.controller.Controller.localZone;
+import static ua.SL520.controller.ShotController.*;
 
-public class SaveToExcel {
+public class SaveToExcelShot {
 
     public void toExcel() throws IOException {
         FileChooser fileChooser = new FileChooser();
@@ -21,17 +22,13 @@ public class SaveToExcel {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("*.xlsx", "*.xlsx"),
                 new FileChooser.ExtensionFilter("*.*", "*.*"));
-        fileChooser.setInitialFileName(openFile + "_res");
-        File userDirectory = new File(openDirectory);
+        fileChooser.setInitialFileName(openFileShot + "_res");
+        File userDirectory = new File(openDirectoryShot);
         fileChooser.setInitialDirectory(userDirectory);
         File file = fileChooser.showSaveDialog((new Stage()));
 
         Workbook book = new XSSFWorkbook();
-        Sheet sheet = book.createSheet(openFile);
-
-        DataFormat format = book.createDataFormat();
-        CellStyle dateStyle = book.createCellStyle();
-        dateStyle.setDataFormat(format.getFormat("dd.mm.yyyy"));
+        Sheet sheet = book.createSheet(openFileShot);
 
         int rownum = 0;
         Cell cell;
@@ -39,27 +36,27 @@ public class SaveToExcel {
         cell = row.createCell(0, CellType.STRING);
         cell.setCellValue("Дані вимірювань");
         cell = row.createCell(1, CellType.STRING);
-        cell.setCellValue(openFile);
+        cell.setCellValue(openFileShot);
         rownum++;
         row = sheet.createRow(rownum);
         cell = row.createCell(0, CellType.STRING);
-        cell.setCellValue("Локальний час");
+        cell.setCellValue("Часовий пояс: ");
         cell = row.createCell(1, CellType.STRING);
         cell.setCellValue(localZone);
         rownum++;
         rownum++;
         row = sheet.createRow(rownum);
 
-        int columnCount = StringUtils.countMatches(headFile, ",");
+        int columnCount = StringUtils.countMatches(headFileShot, ",");
         for (int colnum = 0; colnum <= columnCount; colnum++) {
             cell = row.createCell(colnum, CellType.STRING);
-            cell.setCellValue(headFile.split(",")[colnum]);
+            cell.setCellValue(headFileShot.split(",")[colnum]);
             sheet.autoSizeColumn(colnum);
         }
         rownum++;
 
         for (
-                Result result : resultStream) {
+                ResultShot result : resultStreamShot) {
             row = sheet.createRow(rownum);
             for (int colnum = 0; colnum <= columnCount; colnum++) {
                 cell = row.createCell(colnum, CellType.STRING);

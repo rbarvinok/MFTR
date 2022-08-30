@@ -9,8 +9,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import ua.SL520.javaclass.servisClass.AlertAndInform;
 
-import static ua.SL520.controller.Controller.openFile;
-
 public class Main extends Application {
     AlertAndInform inform = new AlertAndInform();
     public static String icoImage = "/images/img.png";
@@ -19,9 +17,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/view/sample.fxml"));
         primaryStage.getIcons().add(new Image(getClass().getResource(icoImage).toExternalForm()));
-        primaryStage.setTitle("SL-520PE Reporter  " + openFile);
+        primaryStage.setTitle("SL-520PE Reporter");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(event ->

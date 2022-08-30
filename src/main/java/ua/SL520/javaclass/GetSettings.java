@@ -12,16 +12,14 @@ public class GetSettings {
         FileReader fileReader1 = new FileReader("settings.txt");
         BufferedReader bufferedReader1 = new BufferedReader(fileReader1);
 
-        int lineNumber1 = 0;
-        String line1 = "";
-        while ((line1 = bufferedReader1.readLine()) != null) {
-            if (lineNumber1 == 0) {
-                localZone = (line1.split("=")[1]);
+        int lineNumber = 0;
+        String line;
+        while ((line = bufferedReader1.readLine()) != null) {
+            if (lineNumber == 0) {
+                localZone = (line.split("=")[1]);
             }
-            if (lineNumber1 == 1) {
-                //Controller.urlFocus = (line1.split("=")[1]);
-            }
-            lineNumber1++;
+
+            lineNumber++;
         }
         fileReader1.close();
     }

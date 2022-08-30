@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="650.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ua.SL520.controller.chartController">
+   <children>
+      <ScatterChart fx:id="sChart" legendVisible="false" prefHeight="650.0" prefWidth="900.0" style="-fx-border-color: #d0d0d0;" stylesheets="@../styles/day.css" title="Графік початкової швидкості">
+        <xAxis>
+          <NumberAxis label="Номер пострілу" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis label="Швидкість, м/с" side="LEFT" />
+        </yAxis>
+      </ScatterChart>
+   </children>
+</AnchorPane>

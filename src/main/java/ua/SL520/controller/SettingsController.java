@@ -73,7 +73,7 @@ public class SettingsController implements Initializable {
     }
 
     public void onClickChangeUTC() {
-        localZone = "GMT";
+        localZone = "GMT+00:00";
         GMTInput.setText(localZone);
         timeLabel.setText("Час UTC");
     }

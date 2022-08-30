@@ -20,4 +20,23 @@
  -fx-background-color: transparent;
  }
 
+.box{
+-fx-border-color: #d0d0d0;
+-fx-background-color: transparent;
+}
 
+.box:hover {
+-fx-border-color: BLUE;
+}
+
+.onHover{
+    -fx-background-color: BLUE;
+}
+
+.stackPane {
+ -fx-background-color: transparent;
+}
+
+.HD-table-view {
+-fx-font-size: 10px;
+}

@@ -2,20 +2,23 @@ package ua.SL520.javaclass.servisClass;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
+import ua.SL520.javaclass.domain.Result;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import static ua.SL520.controller.Controller.openDirectory;
-import static ua.SL520.controller.Controller.openFile;
+import static ua.SL520.controller.Controller.*;
 
 public class SaveToWord {
     public String headerContent, footerContent, fileContent;
@@ -24,10 +27,10 @@ public class SaveToWord {
     public void toWord() throws IOException {
 
 
-        headerContent = "ДЕРЖАВНИЙ НАУКОВО-ВИПРОБУВАЛЬНИЙ ІНСТИТУТ ВИПРОБУВАНЬ І СЕРТИФІКАЦІЇ ОЗБРОЄННЯ ТА ВІЙСЬКОВОЇ ТЕХНІКИ ";
+        headerContent = "ДЕРЖАВНИЙ НАУКОВО-ДОСЛІДНИЙ ІНСТИТУТ ВИПРОБУВАНЬ І СЕРТИФІКАЦІЇ ОЗБРОЄННЯ ТА ВІЙСЬКОВОЇ ТЕХНІКИ ";
         footerContent = " 14033 м. Чернігів ";
 
-        fileContent = "Дані вимірювань " + openFile;
+        fileContent = "Дані вимірювань";
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Зберегти як...");
@@ -96,37 +99,61 @@ public class SaveToWord {
         document.setTextPosition(25);
         document.setText(fileContent);
         document.addBreak();
+        document.setText(openFile);
 
-        XWPFParagraph bodyParagraph1 = docxModel.createParagraph();
-        XWPFRun document1 = bodyParagraph1.createRun();
-        bodyParagraph1.setAlignment(ParagraphAlignment.LEFT);
-        document1.setFontSize(12);
-        document1.setFontFamily("Time New Roman");
-        document1.setText("Координати вогневої позиції:  ");
-        document1.addBreak();
-//        document1.setText("X = " + calc.xVp + ",  Y = " + calc.yVp);
-//        document1.addBreak();
+//-------------------  table  -------------
+        int cellCount = StringUtils.countMatches(headFile, ",");
+        String splitBy = ",";
 
+        XWPFTable table = docxModel.createTable();
+        table.setTableAlignment(TableRowAlign.CENTER);
+        //table.setCellMargins(5, 5, 5, 5);
+        XWPFTableRow tableRow = table.getRow(0);
+
+//        XWPFRun run = tableRow.addNewTableCell().addParagraph().createRun();
+//        run.setFontSize(14);
+//        run.setFontFamily("Time New Roman");
+//        run.setBold(true);
+        
+        for (int colnum = 0; colnum <= cellCount; colnum++) {
+            tableRow.addNewTableCell();
+            String[] fields = headFile.split(splitBy);
+            List<String> strings = Arrays.asList(fields);
+            tableRow.getCell(colnum).setText(strings.get(colnum));
+            tableRow.setRepeatHeader(true);
+        }
+
+        for (Result result : resultStream) {
+            tableRow = table.createRow();
+            for (int colnum = 0; colnum <= cellCount; colnum++) {
+                String line = result.toString();
+                line = line.replace("[", "").replace("]", "");
+                String[] fields = line.split(splitBy);
+                List<String> strings = Arrays.asList(fields);
+                if (colnum==2)
+                tableRow.getCell(colnum).setText(strings.get(colnum));
+                else tableRow.getCell(colnum).setText(strings.get(colnum).replace(".",","));
+            }
+        }
 
         // сохраняем модель docx документа в файл
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(file.getAbsolutePath());
 
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
         try {
             docxModel.write(outputStream);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
             outputStream.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
 
     private static CTP createHeaderModel(String headerContent) {
@@ -134,7 +161,6 @@ public class SaveToWord {
         CTP ctpHeaderModel = CTP.Factory.newInstance();
         CTR ctrHeaderModel = ctpHeaderModel.addNewR();
         CTText cttHeader = ctrHeaderModel.addNewT();
-
         cttHeader.setStringValue(headerContent);
         return ctpHeaderModel;
     }
@@ -144,11 +170,8 @@ public class SaveToWord {
         CTP ctpFooterModel = CTP.Factory.newInstance();
         CTR ctrFooterModel = ctpFooterModel.addNewR();
         CTText cttFooter = ctrFooterModel.addNewT();
-
         cttFooter.setStringValue(footerContent);
         return ctpFooterModel;
     }
-
-
 }
 

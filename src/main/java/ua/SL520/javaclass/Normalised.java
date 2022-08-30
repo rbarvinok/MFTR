@@ -18,15 +18,13 @@ public class Normalised {
 
     @SneakyThrows
     public static Result res(Source source) {
-
+        String calcLocalZone = "GMT+0" + (Integer.parseInt(localZone.substring(5, 6)) + 2) + ":00";
         Result result = new Result();
 
         SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
         Date docDate = sdfTime.parse(source.getMeasTime());
-        sdfTime.setTimeZone(TimeZone.getTimeZone(localZone));
-        //System.out.println(sdfTime.format(docDate));
+        sdfTime.setTimeZone(TimeZone.getTimeZone(calcLocalZone));
         result.setMeasTime(sdfTime.format(docDate));
-
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
         Date data = sdf.parse(source.getMeasDate());

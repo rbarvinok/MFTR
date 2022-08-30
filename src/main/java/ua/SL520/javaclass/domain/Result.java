@@ -15,12 +15,9 @@ public class Result {
     private String fitOrder;
     private String comment;
 
-
-
-
     @Override
     public String toString() {
-        return filename + ",    " + measNum + ",    " + measDate + ",   " + measTime + ",    " + velocity  + ",    " + accuracy + ",    " +  pointsUsed + ",    " + fitOrder + ",    " + comment +"\n";
+        return filename + "," + measNum + "," + measDate + "," + measTime + "," + velocity  + "," + accuracy + "," +  pointsUsed + "," + fitOrder + "," + comment +"\n";
 
     }
 }

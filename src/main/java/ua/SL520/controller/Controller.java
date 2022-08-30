@@ -1,6 +1,5 @@
 package ua.SL520.controller;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +9,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
@@ -17,13 +19,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import ua.SL520.javaclass.GetSettings;
 import ua.SL520.javaclass.domain.Result;
 import ua.SL520.javaclass.domain.Source;
 import ua.SL520.javaclass.servisClass.*;
 
+import java.awt.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -43,12 +46,11 @@ public class Controller implements Initializable {
     GetSettings getSettings = new GetSettings();
     private SaveToWord stw = new SaveToWord();
     private SaveToExcel ste = new SaveToExcel();
-
     public static String localZone;
     public static String openFile = " ";
     public static String openDirectory;
     public String lineCount;
-    public static String headFile = "Назва файлу, Номер, Дата, Час, Швидкість, Похибка, Точки, FitOrder, Примітка";
+    public static String headFile = "Назва файлу,Номер,Дата,Час,Початкова швидкість (м/с),Похибка (м/с),Точки,FitOrder,Примітка";
     public int colsInpDate = 0;
     public static List<Result> resultStream = new ArrayList<>();
     public static List<Source> sours = new ArrayList<>();
@@ -108,14 +110,13 @@ public class Controller implements Initializable {
 
         fileReader.close();
 
-        //inputDates(sours);
         inputDates(resultStream);
 
         TableColumn<InputDate, String> filename = new TableColumn<>("Назва файлу");
         TableColumn<InputDate, String> measNum = new TableColumn<>("Номер");
         TableColumn<InputDate, String> measDate = new TableColumn<>("Дата");
         TableColumn<InputDate, String> measTime = new TableColumn<>("Час");
-        TableColumn<InputDate, String> velocity = new TableColumn<>("Швидкість");
+        TableColumn<InputDate, String> velocity = new TableColumn<>("Початкова швидкість");
         TableColumn<InputDate, String> accuracy = new TableColumn<>("Похибка");
         TableColumn<InputDate, String> pointsUsed = new TableColumn<>("Точки");
         TableColumn<InputDate, String> fitOrder = new TableColumn<>("FitOrder");
@@ -140,7 +141,7 @@ public class Controller implements Initializable {
         lineCount = String.valueOf(lineNumber - 44);
         labelLineCount.setText("Cтрок:  " + lineCount);
 
-        statusLabel.setText("Вхідні дані");
+        statusLabel.setText("Результати вимірювань " + openFile);
         statusBar.setText(" Файл \n" + openFile);
 
         labelGMT.setText("Локальний час - " + localZone);
@@ -153,14 +154,11 @@ public class Controller implements Initializable {
 
     public void onClickOpenFile() throws Exception {
         if (statusBar.getText().equals("")) {
-            progressIndicatorRun();
-
             fileChooserRun.openFileChooser();
             openFile = selectedOpenFile.getName().substring(0, selectedOpenFile.getName().length() - 4);
             openDirectory = selectedOpenFile.getParent();
 
             openData();
-            progressIndicator.setVisible(false);
             return;
         } else {
             inform.hd = "Файл уже відкритий";
@@ -170,97 +168,66 @@ public class Controller implements Initializable {
         }
     }
 
+    @SneakyThrows
     public void onClickCalculate() {
-        if (statusLabel.getText().equals("")) {
-            statusBar.setText("Помилка! Відсутні дані для рохрахунку");
-            inform.hd = "Помилка! Відсутні дані для рохрахунку";
-            inform.ct = " 1. Відкрити файл  даних 'НАМ'\n 2. Натиснути кнопку Розрахувати \n 3. Зберегти розраховані дані в вихідний файл\n";
-            inform.alert();
-            statusBar.setText("");
-            return;
-        } else {
-            List<String> resultsStrings = resultStream.stream().map(Result::toString).collect(Collectors.toList());
-            //output to Table----------------------------------------
-            inputDates(resultsStrings);
-            TableColumn<InputDate, String> filename = new TableColumn<>("Назва файлу");
-            TableColumn<InputDate, String> measNum = new TableColumn<>("Номер");
-            TableColumn<InputDate, String> measDate = new TableColumn<>("Дата");
-            TableColumn<InputDate, String> measTime = new TableColumn<>("Час");
-            TableColumn<InputDate, String> velocity = new TableColumn<>("Швидкість");
-            TableColumn<InputDate, String> accuracy = new TableColumn<>("Похибка");
-            TableColumn<InputDate, String> pointsUsed = new TableColumn<>("Точки");
-            TableColumn<InputDate, String> fitOrder = new TableColumn<>("FitOrder");
-            TableColumn<InputDate, String> comment = new TableColumn<>("Примітка");
+        getSettings.getSettings();
+        resultStream = resultBulk(sours);
 
-            for (int i = 0; i <= colsInpDate - 9; i++) {
-                final int indexColumn = i;
-                filename.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(0 + indexColumn)));
-                measNum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(1 + indexColumn)));
-                measDate.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(2 + indexColumn)));
-                measTime.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(3 + indexColumn)));
-                velocity.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(4 + indexColumn)));
-                accuracy.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(5 + indexColumn)));
-                pointsUsed.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(6 + indexColumn)));
-                fitOrder.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(7 + indexColumn)));
-                comment.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(8 + indexColumn)));
-            }
-            outputTable.getColumns().addAll(filename, measNum, measDate, measTime, velocity, accuracy, pointsUsed, fitOrder, comment);
-            outputTable.setItems(inputDatesList);
+        List<String> resultsStrings = resultStream.stream().map(Result::toString).collect(Collectors.toList());
+        //output to Table----------------------------------------
+        inputDates(resultsStrings);
+        TableColumn<InputDate, String> filename = new TableColumn<>("Назва файлу");
+        TableColumn<InputDate, String> measNum = new TableColumn<>("Номер");
+        TableColumn<InputDate, String> measDate = new TableColumn<>("Дата");
+        TableColumn<InputDate, String> measTime = new TableColumn<>("Час");
+        TableColumn<InputDate, String> velocity = new TableColumn<>("Початкова швидкість");
+        TableColumn<InputDate, String> accuracy = new TableColumn<>("Похибка");
+        TableColumn<InputDate, String> pointsUsed = new TableColumn<>("Точки");
+        TableColumn<InputDate, String> fitOrder = new TableColumn<>("FitOrder");
+        TableColumn<InputDate, String> comment = new TableColumn<>("Примітка");
+
+        for (int i = 0; i <= colsInpDate - 9; i++) {
+            final int indexColumn = i;
+            filename.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(0 + indexColumn)));
+            measNum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(1 + indexColumn)));
+            measDate.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(2 + indexColumn)));
+            measTime.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(3 + indexColumn)));
+            velocity.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(4 + indexColumn)));
+            accuracy.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(5 + indexColumn)));
+            pointsUsed.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(6 + indexColumn)));
+            fitOrder.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(7 + indexColumn)));
+            comment.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItems().get(8 + indexColumn)));
         }
-        statusLabel.setText("Вихідні дані");
+        outputTable.getColumns().addAll(filename, measNum, measDate, measTime, velocity, accuracy, pointsUsed, fitOrder, comment);
+        outputTable.setItems(inputDatesList);
+
+        statusLabel.setText("Результати вимірювань " + openFile);
+        labelGMT.setText("Локальний час - " + localZone);
     }
 
     @SneakyThrows
     public void onClickSaveWord() {
-        if (CollectionUtils.isEmpty(resultStream)) {
-            log.warn("... is empty");
-            statusBar.setText("Помилка! Відсутні дані для збереження");
-            inform.hd = "Помилка! Відсутні дані для збереження";
-            inform.ct = " 1. Відкрити підготовлений файл вихідних даних\n 2. Натиснути кнопку Розрахувати \n 3. Зберегти розраховані дані в вихідний файл\n";
-            inform.alert();
-            progressIndicator.setVisible(false);
-            statusBar.setText("");
-            return;
-        }
-
         stw.toWord();
-
-
         inform.title = "Збереження файлу";
         inform.hd = null;
         inform.ct = "Успішно записано в файл '" + openFile + ".docx'";
         inform.inform();
-
-        progressIndicator.setVisible(false);
     }
 
     @SneakyThrows
     public void onClickSaveExcel() {
-        progressIndicatorRun();
-        if (CollectionUtils.isEmpty(resultStream)) {
-            log.warn("... is empty");
-            statusBar.setText("Помилка! Відсутні дані для збереження");
-            inform.hd = "Помилка! Відсутні дані для збереження";
-            inform.ct = " 1. Відкрити підготовлений файл вихідних даних\n 2. Натиснути кнопку Розрахувати \n 3. Зберегти розраховані дані в вихідний файл\n";
-            inform.alert();
-            progressIndicator.setVisible(false);
-            statusBar.setText("");
-            return;
-        }
-
         ste.toExcel();
-
         inform.title = "Збереження файлу";
         inform.hd = null;
         inform.ct = "Успішно записано в файл '" + openFile + ".xlsx'";
         inform.inform();
-
-        progressIndicator.setVisible(false);
     }
 
-    public void onClickChart(ActionEvent actionEvent) throws IOException {
-        progressIndicator.setVisible(true);
-        System.out.println("ghjgsdlfsdafjk;ghk;j");
+    @SneakyThrows
+    public void onClickChart() {
+        os.viewURL = "/view/chart.fxml";
+        os.title = "Графік GPS   " + openFile;
+        os.openStage();
     }
 
     public void inputDates(List source) {
@@ -268,6 +235,7 @@ public class Controller implements Initializable {
         outputTable.getItems().clear();
         outputTable.setEditable(false);
         int rowsInpDate = 0;
+
         String line;
         String csvSplitBy = ",";
         for (int j = 0; j < source.size(); j++) {
@@ -281,8 +249,37 @@ public class Controller implements Initializable {
         }
     }
 
+    @SneakyThrows
+    public void onClickShot(ActionEvent actionEvent) {
+        os.viewURL = "/view/shotSample.fxml";
+        os.title = "Sl-520PE Reporter (Shot)";
+        os.maximized = false;
+        os.isResizable = true;
+        os.isModality = true;
+        os.openStage();
+    }
 
-    public void onClick_menuAbout(ActionEvent actionEvent) throws IOException {
+    @SneakyThrows
+    public void onClickManual() {
+        if (Desktop.isDesktopSupported()) {
+            File url = new File("userManual/UserManual.pdf");
+            Desktop desktop = Desktop.getDesktop();
+            //System.out.println(url.getPath());
+            desktop.open(url);
+        }
+    }
+
+    @SneakyThrows
+    public void onClickImageSetup() {
+        if (Desktop.isDesktopSupported()) {
+            File url = new File("userManual/ImageSetup.pdf");
+            Desktop desktop = Desktop.getDesktop();
+            //System.out.println(url.getPath());
+            desktop.open(url);
+        }
+    }
+
+    public void onClick_menuAbout() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/about.fxml"));
         Parent root = fxmlLoader.load();
         Stage stage = new Stage(StageStyle.TRANSPARENT);
@@ -303,7 +300,6 @@ public class Controller implements Initializable {
         tCalc.setDisable(true);
         tSaveWord.setDisable(true);
         tChart.setDisable(true);
-        progressIndicator.setVisible(false);
     }
 
     public void onClickSettings() throws IOException {
@@ -313,13 +309,6 @@ public class Controller implements Initializable {
         os.isResizable = false;
         os.isModality = true;
         os.openStage();
-    }
-
-    public void progressIndicatorRun() {
-        Platform.runLater(() -> {
-            progressIndicator.setVisible(true);
-            statusBar.setText("Зачекайте...");
-        });
     }
 
     public void onClickCancelBtn(ActionEvent event) {

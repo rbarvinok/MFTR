@@ -11,7 +11,7 @@ public class FileChooserRun {
 
     public void openFileChooser() {
         javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
-        fileChooser.setTitle("EulerConverter. Відкриття файлу");
+        fileChooser.setTitle("Відкриття файлу");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.getExtensionFilters().addAll(
                 new javafx.stage.FileChooser.ExtensionFilter("*.ses", "*.ses"),
