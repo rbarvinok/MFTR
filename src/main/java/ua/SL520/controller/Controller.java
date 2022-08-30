@@ -65,8 +65,6 @@ public class Controller implements Initializable {
     @FXML
     public Label statusLabel, labelGMT;
     public Button tSaveWord, tCalc, tSaveExcel, tChart;
-    @FXML
-    public ProgressIndicator progressIndicator;
 
     @SneakyThrows
     @Override
@@ -253,9 +251,9 @@ public class Controller implements Initializable {
     public void onClickShot(ActionEvent actionEvent) {
         os.viewURL = "/view/shotSample.fxml";
         os.title = "Sl-520PE Reporter (Shot)";
-        os.maximized = false;
+        os.maximized = true;
         os.isResizable = true;
-        os.isModality = true;
+        os.isModality = false;
         os.openStage();
     }
 
@@ -302,9 +300,10 @@ public class Controller implements Initializable {
         tChart.setDisable(true);
     }
 
-    public void onClickSettings() throws IOException {
+    @SneakyThrows
+    public void onClickSettings()  {
         os.viewURL = "/view/settings.fxml";
-        os.title = "Налаштування   ";
+        os.title = "Налаштування";
         os.maximized = false;
         os.isResizable = false;
         os.isModality = true;

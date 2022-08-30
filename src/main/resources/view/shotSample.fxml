@@ -53,9 +53,9 @@
             </Button>
             <Separator layoutX="211.0" layoutY="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="4.0">
             </Separator>
-                <Button id="b" layoutX="50.0" layoutY="9.0" mnemonicParsing="false" onAction="#onClickSettings" prefHeight="20.0" prefWidth="20.0" styleClass="button1" stylesheets="@../styles/day.css">
+                <Button fx:id="tSettings" layoutX="50.0" layoutY="9.0" mnemonicParsing="false" onAction="#onClickSettings" pickOnBounds="false" prefHeight="13.0" prefWidth="20.0" styleClass="button1" stylesheets="@../styles/day.css">
                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="20.0" fitWidth="20.0" onDragDetected="#onClickSettings" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../images/options.png" />
                             </image>
@@ -69,7 +69,7 @@
         </ToolBar>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <children>
-                <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="6.0" layoutY="7.0" prefHeight="31.0" prefWidth="522.0" text="Відкрийте файл *.txt" wrapText="true" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="597.0" AnchorPane.topAnchor="10.0">
+                <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="8.0" prefHeight="25.0" prefWidth="451.0" text="Відкрийте файл *.txt" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="669.0" AnchorPane.topAnchor="8.0">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
@@ -90,7 +90,7 @@
                       <NumberAxis label="Швидкість, м/с" side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <LineChart fx:id="chartDistance" alternativeColumnFillVisible="true" animated="false" createSymbols="false" layoutX="457.0" layoutY="299.0" legendVisible="false" prefHeight="247.0" prefWidth="653.0" style="-fx-border-color: grey;" title="Похила дальність" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0">
+                  <LineChart fx:id="chartDistance" alternativeColumnFillVisible="true" animated="false" createSymbols="false" layoutX="457.0" layoutY="299.0" legendVisible="false" prefHeight="247.0" prefWidth="653.0" style="-fx-border-color: grey;" title="Похила дальність" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="297.0">
                      <xAxis>
                         <NumberAxis label="Час, с" side="BOTTOM" />
                      </xAxis>

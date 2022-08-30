@@ -15,12 +15,14 @@ import lombok.SneakyThrows;
 import ua.SL520.javaclass.GetSettings;
 import ua.SL520.javaclass.domain.ResultShot;
 import ua.SL520.javaclass.domain.SourceShot;
-import ua.SL520.javaclass.servisClass.*;
+import ua.SL520.javaclass.servisClass.AlertAndInform;
+import ua.SL520.javaclass.servisClass.InputDate;
+import ua.SL520.javaclass.servisClass.OpenStage;
+import ua.SL520.javaclass.servisClass.SaveToExcelShot;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,6 @@ import static ua.SL520.javaclass.servisClass.NormalisedShot.resultBulkShot;
 public class ShotController implements Initializable {
     AlertAndInform inform = new AlertAndInform();
     OpenStage os = new OpenStage();
-    FileChooserRun fileChooserRun = new FileChooserRun();
     GetSettings getSettings = new GetSettings();
     private SaveToExcelShot ste = new SaveToExcelShot();
     public static String openFileShot = " ";
@@ -56,9 +57,9 @@ public class ShotController implements Initializable {
     public TextField statusBar, labelLineCount;
     @FXML
     public Label statusLabel, labelGMT;
-    public Button tSaveExcel, tChart;
+    public Button tSaveExcel, tSettings;
     @FXML
-    public LineChart chartVelocity,chartDistance;
+    public LineChart chartVelocity, chartDistance;
 
     @SneakyThrows
     @Override
@@ -203,14 +204,7 @@ public class ShotController implements Initializable {
         }
     }
 
-    public void onClickSettings() throws IOException {
-        os.viewURL = "/view/settings.fxml";
-        os.title = "Налаштування";
-        os.maximized = false;
-        os.isResizable = false;
-        os.isModality = true;
-        os.openStage();
-    }
+    @SneakyThrows
 
     public void onClickNew() {
         outputTable.getColumns().clear();
@@ -225,7 +219,14 @@ public class ShotController implements Initializable {
         tSaveExcel.setDisable(true);
     }
 
+    @SneakyThrows
     public void onClickSettings(ActionEvent actionEvent) {
+        os.viewURL = "/view/settings.fxml";
+        os.title = "Налаштування";
+        os.maximized = false;
+        os.isResizable = false;
+        os.isModality = true;
+        os.openStage();
     }
 
     public void inputDates(List source) {
