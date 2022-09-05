@@ -1,10 +1,10 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
-group 'ua.SL520'
+group 'ua.MFTR'
 version '1.0.0'
 sourceCompatibility = 11
 
@@ -14,7 +14,7 @@ repositories {
 
 task startApp(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
-    main = "ua.SL520.Main"
+    main = "ua.MFTR.Main"
     tasks.withType(JavaCompile) {
         options.with {
             encoding = 'UTF-8'
